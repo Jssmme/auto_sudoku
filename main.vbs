@@ -8,27 +8,85 @@ For i = 0 To 8
     x(i) = x10 + z * i + 4 * (i \ 3)
     y(i) = y10 + z * i + 4 * (i \ 3)
 Next
-Dim c0,c1,c2,c3,c4
+Dim c0,c1,c2,c3,c4,c5,c6
 Dim board(9,9)
 Dim puz2(9,9)
 
-//Delay 1000
-//Tap 511, 2000
-//For i = 0 To 7
-//	TracePrint i*0.5
-//	Delay 500
-//Next
-Rem ks
-a = GetPixelColor (481, 749)
-If a <> "E8DFD9" Then 
-	TracePrint "worng start"
-	EndScript
-	Else 
-	Tap 484, 1546
-	Delay 1500
-End If
+
 dus ()
 TracePrint "solving"
+
+/////////////
+Dim puz3(9,9)
+Rem wy1
+For k = 1 To 9
+    For i = 0 To 8
+        a = null
+        For u = 0 To 8
+            puz3(i, u) = 0
+            If board(i, u) = 0 Then 
+                If valid(board, i, u, k) Then 
+                    puz3(i, u) = 1
+                End If
+            End If
+            a = a & puz3(i,u)
+        Next
+    Next
+    For i = 0 To 8
+        a = 0
+        For u = 0 To 8
+            If puz3(i, u) = 1 Then 
+                a = a + 1
+                c5 = i
+                c6 = u
+            End If
+        Next
+        If a = 1 Then 
+            board(c5,c6) = k
+            tis(c5,c6)
+            puz2(c5,c6) = k
+            Goto wy1
+        End If
+    Next
+    For u = 0 To 8
+        a = 0
+        For i = 0 To 8
+            If puz3(i, u) = 1 Then 
+                a = a + 1
+                c5 = i
+                c6 = u
+            End If
+        Next
+        If a = 1 Then 
+            board(c5,c6) = k
+            tis(c5,c6)
+            puz2(c5,c6) = k
+            Goto wy1
+        End If
+    Next
+    For i0 = 0 To 2
+        For u0 = 0 To 2
+            a = 0
+            For i = 0 To 2
+                For u = 0 To 2
+                    If puz3(i0 * 3 + i, u0 * 3 + u) = 1 Then 
+                        a = a + 1
+                        c5 = i0 * 3 + i
+                        c6 = u0 * 3 + u
+                    End If
+                Next
+            Next
+            If a = 1 Then 
+                board(c5,c6) = k
+                tis(c5,c6)
+                puz2(c5,c6) = k
+                Goto wy1
+            End If
+        Next
+    Next
+Next
+TracePrint "Âçï‰∏çÂá∫Êù•"
+/////////////
 solver (board)
 For i = 0 To 8
     a = null
@@ -41,7 +99,7 @@ Next
 For i = 0 To 8
     For u = 0 To 8
         If board(i, u) = 0 Then 
-            TracePrint "??°‰®™®¢?"
+            TracePrint "ÁÆóÈîô‰∫Ü"
             EndScript 
         End If
     Next
@@ -49,22 +107,17 @@ Next
 
 For i = 0 To 8
     For u = 0 To 8
-        If puz2(i, u) = 0 and board(i,u) <> 0 Then 
+        If puz2(i, u) = 0 Then 
             tis (i, u)
         End If
     Next
 Next
 TracePrint "finish!"
 
-//For i = 0 To 7
-//	TracePrint i*0.5
-	Delay 2500
-//Next
-//
-Tap 484, 2072
-Delay 2000
-Goto ks
-//?®¢®∫y??®∫y°¡®¶
+
+
+
+//ËØªÊï∞ËøõÊï∞ÁªÑ
 Function dus()
     KeepCapture 
     For i = 0 To 8
@@ -121,6 +174,7 @@ Function solver(board)
     Exit Function
 End Function
 
+//ËØªÂèñÂáΩÊï∞
 Function shu(x, y)
     c1 = GetPixelColor(x - 1, y - 1)
     c2 = GetPixelColor(x - 1, y)
@@ -190,12 +244,10 @@ Function shu(x, y)
     End If
 End Function
 
-
+//Â°´Êï∞ÂáΩÊï∞
 Function tis(i,u)
-    Delay 100
-//    TracePrint i&u
     Tap x(u) + 40, y(i) + 40
-    Delay 100
+    Delay 50
     Tap board(i, u) * 115 - 35, 1900
     Delay 50
 End Function
